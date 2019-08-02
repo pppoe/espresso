@@ -19,6 +19,7 @@ void load_denseLayer(denseLayer *dl, FILE * const pf, int bin)
 {
      int M; fread(&M, sizeof(int), 1, pf);
      int N; fread(&N, sizeof(int), 1, pf);
+     int m, n;
      printf("dense: %d %d\n", M, N);
      ftens W = ftens_from_file(1, M, N, 1, pf);
      ftens b = ftens_from_file(1, 1, M, 1, pf);

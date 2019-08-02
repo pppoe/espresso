@@ -12,6 +12,8 @@ import os
 import numpy as np
 import struct
 import json
+import pickle
+import argparse
 
 INPUT = 0
 DENSE = 1
@@ -29,54 +31,56 @@ def read_param(params, n):
 def main(data_file, desc_file, out_file):
     assert(os.path.exists(desc_file) and os.path.exists(data_file))
     desc = json.load(open(desc_file, 'r'))
-    params, n = np.load(data_file), 0
+    params = pickle.load(open(data_file, 'rb'))
+    n = 0
     with open(out_file, 'wb') as out:
         for elem in desc:
             tmp = ''
 
             if elem['type'] == "ndense":
                 N = elem['val']
-                print 'ndense: %d' % N
+                print ('ndense: %d' % N)
                 tmp = struct.pack('B', DENSE | NUM) + \
                       struct.pack('i', N)
 
             elif elem['type'] == "nbnorm":
                 N = elem['val']
-                print 'nbnorm: %d' % N
+                print ('nbnorm: %d' % N)
                 tmp = struct.pack('B', BNORM | NUM) + \
                       struct.pack('i', N)
 
             elif elem['type'] == "nconv":
                 N = elem['val']
-                print 'nconv: %d' % N
+                print ('nconv: %d' % N)
                 tmp = struct.pack('B', CONV | NUM) + \
                       struct.pack('i', N)
 
             elif elem['type'] == "npool":
                 N = elem['val']
-                print 'npool: %d' % N
+                print ('npool: %d' % N)
                 tmp = struct.pack('B', POOL | NUM) + \
                       struct.pack('i', N)
 
             elif elem['type'] == 'input':
                tmp = struct.pack('B', INPUT | DATA)
                dim = elem['dim']
-               print 'input: %d %d %d' % tuple(dim)
+               print ('input: %d %d %d' % tuple(dim))
                #tmp += struct.pack('3i', *dim)
 
             elif elem['type'] == 'dense':
                 M, N = elem['dim']
-                print 'dense: %d %d' % (M, N)
+                data_key = elem['data_key']
+                print ('dense: %d %d' % (M, N))
                 tmp = struct.pack('B', DENSE | DATA) + \
                       struct.pack('2i', M, N)
-                W = read_param(params, n).T
-                b = read_param(params, n + 1)
+                W = params[data_key + '_w']
+                b = params[data_key + '_b']
                 tmp += W.tostring('C') + b.tostring('C')
                 n += 2
 
             elif elem['type'] == 'bnorm':
                 N = elem['dim']
-                print 'bnorm: %d' % N
+                print ('bnorm: %d' % N)
                 tmp = struct.pack('B', BNORM | DATA) + \
                       struct.pack('i', N)
                 for i in range(4):
@@ -85,7 +89,7 @@ def main(data_file, desc_file, out_file):
 
             elif elem['type'] == 'conv':
                 dim = elem['dim']
-                print 'conv: %d %d %d %d %d %d %d' % tuple(dim)
+                print ('conv: %d %d %d %d %d %d %d' % tuple(dim))
                 tmp = struct.pack('B', CONV | DATA) + \
                       struct.pack('7i', *dim)
                 H = read_param(params, n)
@@ -96,20 +100,23 @@ def main(data_file, desc_file, out_file):
 
             elif elem['type'] == 'pool':
                 dim = elem['dim']
-                print 'max pool: %d %d %d %d' % tuple(dim)
+                print ('max pool: %d %d %d %d' % tuple(dim))
                 tmp = struct.pack('B', POOL | DATA) + \
                       struct.pack('4i', *dim)
             else:
                 pass
 
-            print len(tmp)
+            print (len(tmp))
             out.write(tmp)
 
 
 if __name__ == '__main__':
-    from docopt import docopt
 
-    args = docopt(__doc__)
-    data, desc, out = args['<data>'], args['<desc>'], args['<out>']
+    parser = argparse.ArgumentParser()
+    parser.add_argument("data")
+    parser.add_argument("desc")
+    parser.add_argument("out")
+    args = parser.parse_args()
 
-    main(data, desc, out)
+
+    main(args.data, args.desc, args.out)

@@ -23,8 +23,8 @@ void mlp_free(mlp *net)
 mlp mlp_load(const char *esp, int bin)
 {
      mlp out;
-     int Ndl;  denseLayer *dl;
-     int Nbnl; bnormLayer *bnl;
+     int Ndl = 0;  denseLayer *dl;
+     int Nbnl = 0; bnormLayer *bnl;
 
      FILE *pf = fopen(esp, "rb");
      ASSERT(pf, "err: esp fopen\n");
