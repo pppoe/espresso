@@ -3,8 +3,8 @@
 
 int main(int argc, char *argv[])
 {
-     /*cufmem_alloc(BYTES(float, 4096*28*28));*/
-     /*cupmem_alloc(BYTES(uint64_t, 4096*28*28/64));*/
+		 cufmem_alloc(BYTES(float, 4096*28*28));
+		 cupmem_alloc(BYTES(uint64_t, 4096*28*28/64));
 
      mlp tmp = mlp_load("data/mnist_2layers.esp", 1);
      cupmlp nn  = cupmlp_convert(&tmp);
@@ -23,9 +23,15 @@ int main(int argc, char *argv[])
 
      cuinputLayer_forward(&img, il, 0);
      /*cuftens_print(&il->out);*/
-     cuftens_print_shape(&il->out);
 
      cupdenseLayer_forward_initial(&il->out, dl, 128);
+     cuptens_print_shape(&dl->in);
+     cuftens_print_shape(&dl->out);
+		 dl++;
+     cuptens_print_shape(&dl->in);
+     cuftens_print_shape(&dl->out);
+		 cupdenseLayer_forward(&(dl-1)->pout, dl, 0);
+
      /*cubnormLayer_forward(&dl->out, bnl, 0);*/
      /*cupsignAct_forward(&dl->out, &dl->pout);*/
 

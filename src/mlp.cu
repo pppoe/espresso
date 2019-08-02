@@ -1,4 +1,5 @@
 #include "util.cuh"
+#include "cuesp.h"
 #include "nn/cumlp.h"
 
 
@@ -25,8 +26,10 @@ void cumlp_free(cumlp *net)
 cumlp cumlp_convert(mlp *net)
 {
      cumlp out = cumlp_init(net->Ndl, net->Nbnl);
-     for (int i=0; i<net->Ndl;  i++)
+     for (int i=0; i<net->Ndl;  i++) {
           cudenseLayer_convert(&net->dl[i], &out.dl[i]);
+					/*cuftens_print_shape(&out.dl[i].out);*/
+		 }
 
      for (int i=0; i<net->Nbnl; i++)
           cubnormLayer_convert(&net->bnl[i], &out.bnl[i]);

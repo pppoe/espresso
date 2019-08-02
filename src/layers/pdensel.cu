@@ -51,6 +51,7 @@ void cupdenseLayer_copy_input(cuptens *t, cupdenseLayer *dl)
 void cupdenseLayer_forward(cuptens *t, cupdenseLayer *dl, int save)
 {
      int D=t->D, M=dl->M, N=dl->W.X;
+		 printf("t->MNL %d dl->N %d D %d M %d N %d\n", t->MNL, dl->N, D, M, N); 
      cuASSERT(t->MNL == dl->N/64, "err: cupdense shape\n");
 
      if (save) cupdenseLayer_copy_input(t, dl);

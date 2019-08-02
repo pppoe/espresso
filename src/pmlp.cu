@@ -22,8 +22,9 @@ void cupmlp_free(cupmlp *nn)
 cupmlp cupmlp_convert(mlp *nn)
 {
      cupmlp out = cupmlp_init(nn->Ndl, nn->Nbnl);
-     for (int i=0; i < nn->Ndl; i++)
+     for (int i=0; i < nn->Ndl; i++) {
           cupdenseLayer_convert(&nn->dl[i], &out.dl[i], i==0);
+		 }
 
      for (int i=0; i < nn->Nbnl; i++)
           cubnormLayer_convert(&nn->bnl[i], &out.bnl[i]);

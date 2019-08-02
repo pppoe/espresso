@@ -38,9 +38,14 @@ mlp mlp_load(const char *esp, int bin)
           case INPUTL|LDAT:
                out = mlp_init(Ndl, Nbnl);
                dl=out.dl; bnl=out.bnl;
+							 printf("mlp_init %d dl %d nl\n", Ndl, Nbnl);
                break;
 
-          case DENSEL|LDAT: load_denseLayer(dl, pf, bin); dl++;  break;
+          case DENSEL|LDAT: 
+							 load_denseLayer(dl, pf, bin); 
+							 printf("load_denseLayer\n");
+							 dl++; 
+							 break;
           case BNORML|LDAT: load_bnormLayer(bnl, pf);     bnl++; break;
                break;
 
