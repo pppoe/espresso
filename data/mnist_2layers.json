@@ -1,6 +1,6 @@
 [
     {"type": "ndense", "val": 2},
     {"type": "input", "dim": [28, 28, 1]},
-    {"type": "dense", "dim": [20, 784], "data_key" : "linear1"},
-    {"type": "dense", "dim": [20, 10], "data_key" : "linearf"}
+    {"type": "dense", "dim": [64, 784], "data_key" : "linear1"},
+    {"type": "dense", "dim": [64, 10], "data_key" : "linearf"}
 ]
